@@ -1,10 +1,4 @@
 @use "mixins/font-face" as *;
-//@include font-face("GraphikLCG", "../fonts/GraphikLCG-Thin/GraphikLCG-Thin", 100);
-//@include font-face("GraphikLCG", "../fonts/GraphikLCG-ExtraLight/GraphikLCG-ExtraLight", 200);
-@include font-face("Ubuntu", "../fonts/UbuntuLight/UbuntuLight", 300);
-@include font-face("Ubuntu", "../fonts/UbuntuRegular/UbuntuRegular");
-@include font-face("Ubuntu", "../fonts/UbuntuMedium/UbuntuMedium", 500);
-//@include font-face("GraphikLCG", "../fonts/GraphikLCG-SemiBold/GraphikLCG-SemiBold", 600);
-@include font-face("Ubuntu", "../fonts/UbuntuBold/UbuntuBold", 700);
-//@include font-face("GraphikLCG", "../fonts/GraphikLCG-ExtraBold/GraphikLCG-ExtraBold", 800);
-//@include font-face("GraphikLCG", "../fonts/GraphikLCG-Black/GraphikLCG-Black", 900);
+@include font-face("Inter", "../fonts/InterRegular/InterRegular");
+@include font-face("Inter", "../fonts/InterBold/InterBold", 700);
+

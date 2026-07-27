@@ -14,4 +14,10 @@
 	<?php echo do_font_preload(); ?>
 	<?php wp_head(); ?>
 </head>
-<body <?php body_class(); ?>>
+<body <?php body_class(); ?>
+<header class="header">
+	<div class="main_wrapper">
+		<div class="header_label">Header</div>
+		<?php echo get_top_menu_HTML(); ?>
+	</div>
+</header>

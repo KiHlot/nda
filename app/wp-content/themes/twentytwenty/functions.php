@@ -113,4 +113,5 @@
   add_action('wp_enqueue_scripts', 'twentytwenty_scripts');
   
   include_once 'configs/index.php';
-  
+  include_once 'helpers/index.php';
+  include_once 'components/index.php';

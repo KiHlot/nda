@@ -2,7 +2,7 @@
 @use "mixins" as *;
 
 ::placeholder {
-  color: rgba($color, 0.4);
+  color: rgba($black, 0.4);
 }
 
 ::selection {
@@ -136,12 +136,12 @@ table {
 }
 
 a {
-  color: $color;
+  color: $black;
   text-decoration: none;
 
   &:hover {
-    opacity: 0.9;
-	  color: $accent;
+    opacity: 0.8;
+	  color: $black;
   }
 
   &:focus {
