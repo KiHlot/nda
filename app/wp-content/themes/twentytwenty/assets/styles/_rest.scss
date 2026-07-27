@@ -1,0 +1,232 @@
+@use "vars" as *;
+@use "mixins" as *;
+
+::placeholder {
+  color: rgba($color, 0.4);
+}
+
+::selection {
+  background-color: $accent;
+  color: $white;
+}
+
+* {
+  box-sizing: border-box;
+  color-scheme: dark;
+  outline: none;
+}
+
+html,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+ol,
+ul {
+  list-style: none;
+
+  li {
+    list-style: none;
+
+    &::marker {
+      display: none;
+    }
+  }
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+a {
+  color: $color;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.9;
+	  color: $accent;
+  }
+
+  &:focus {
+    text-decoration: none;
+  }
+}
+
+strong,
+b {
+  font-weight: 500;
+}
+
+em {
+  font-style: italic;
+}
+
+input {
+  outline: none;
+
+  &[type="number"] {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      -moz-appearance: textfield;
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      font-size: 16px;
+    }
+  }
+
+  &[type="date"] {
+    &::-webkit-calendar-picker-indicator {
+      filter: brightness(50%);
+      cursor: pointer;
+    }
+  }
+}
+
+button,
+input,
+textarea {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: block;
+  font-size: 14px;
+  font-family: inherit;
+  color: inherit;
+}
+
+button,
+.btn {
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default !important;
+    opacity: 0.2 !important;
+  }
+}
+
+svg {
+  display: block;
+}
+
+section,
+header {
+  height: auto;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+section {
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
