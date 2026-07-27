@@ -1,0 +1,16 @@
+@use "../vars" as *;
+
+.theme_header {
+  width: 100%;
+
+  .main_wrapper {
+    background-color: $grey;
+  }
+
+  .label {
+    width: 100%;
+    font-size: 32px;
+    line-height: 38px;
+    padding: 30px;
+  }
+}
