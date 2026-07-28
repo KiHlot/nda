@@ -1,0 +1,13 @@
+@use "../vars" as *;
+
+.footer {
+  width: 100%;
+  margin-top: 30px;
+
+  .main_wrapper {
+    padding: 30px;
+    font-size: 32px;
+    line-height: 38px;
+    background-color: $grey;
+  }
+}
