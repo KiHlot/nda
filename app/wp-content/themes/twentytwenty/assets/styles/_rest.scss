@@ -141,7 +141,7 @@ a {
 
   &:hover {
     opacity: 0.8;
-	  color: $black;
+    color: $black;
   }
 
   &:focus {
@@ -185,6 +185,12 @@ input {
   }
 }
 
+h1,
+h2,
+h3 {
+  font-weight: 400;
+}
+
 button,
 input,
 textarea {
@@ -199,9 +205,14 @@ textarea {
   color: inherit;
 }
 
-button,
-.btn {
+button {
   cursor: pointer;
+
+  &:hover {
+    &:not(:disabled) {
+      opacity: 0.8;
+    }
+  }
 
   &:disabled {
     cursor: default !important;

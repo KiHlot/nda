@@ -1,0 +1,24 @@
+@use "../vars" as *;
+
+.likes_widget {
+  width: fit-content;
+  display: flex;
+  gap: 0 10px;
+
+  .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+
+    &.decrement {
+      background-color: $accent;
+    }
+
+    &.increment {
+      background-color: $orange;
+    }
+  }
+}
