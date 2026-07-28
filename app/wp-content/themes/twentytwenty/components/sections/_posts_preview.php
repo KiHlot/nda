@@ -2,7 +2,7 @@
   
   function get_posts_preview(): string
   {
-    $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+    $paged = get_query_var('paged') ?: get_query_var('page') ?: 1;
     
     $query = new WP_Query([
       'category_name' => 'stati',
@@ -29,9 +29,9 @@
     
     $pagination = paginate_links(array(
       'total' => $query->max_num_pages,
-      'current' => $paged,
-      'prev_text' => '« Назад',
-      'next_text' => 'Вперед »',
+      'current' => $query->query_vars['paged'],
+      'prev_text' => 'Назад',
+      'next_text' => 'Вперед',
     ));
     
     return '

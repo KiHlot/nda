@@ -1,0 +1,24 @@
+@use "../vars" as *;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 7px;
+
+  > * {
+    padding: 10px;
+  }
+
+  .current {
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $black;
+    color: $white;
+    border-radius: 50%;
+  }
+}
