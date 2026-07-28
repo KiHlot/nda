@@ -1,9 +1,15 @@
 @use "../vars" as *;
+@use "../mixins/media" as *;
 
 .footer {
   width: 100%;
   margin-top: 30px;
-
+  padding: 0 15px 30px;
+  
+  @include media(xl) {
+    padding: 0;
+  }
+  
   .main_wrapper {
     padding: 30px;
     font-size: 32px;

@@ -1,4 +1,5 @@
 @use "../vars" as *;
+@use "../mixins/media" as *;
 
 .pagination {
   display: flex;
@@ -8,6 +9,38 @@
 
   > * {
     padding: 10px;
+  }
+
+  .prev,
+  .next {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 0 10px 4px;
+    
+    @include media(md) {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+
+  .prev {
+    &:before {
+      content: "<";
+
+      @include media(md) {
+        content: "Назад";
+      }
+    }
+  }
+
+  .next {
+    &:before {
+      content: ">";
+
+      @include media(md) {
+        content: "Вперёд";
+      }
+    }
   }
 
   .current {

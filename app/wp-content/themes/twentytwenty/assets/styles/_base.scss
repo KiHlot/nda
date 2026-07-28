@@ -17,10 +17,10 @@ body {
 }
 
 .main_wrapper {
-  width: 1200px;
+  width: 100%;
+  padding: 0 15px;
   height: auto;
   position: relative;
-  margin: 0 auto;
 
   @include media(xxl) {
     width: 1360px;

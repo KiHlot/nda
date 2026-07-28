@@ -1,16 +1,19 @@
 @use "../vars" as *;
+@use "../mixins/media" as *;
 
 .theme_header {
   width: 100%;
-
-  .main_wrapper {
-    background-color: $grey;
-  }
+  margin-top: 30px;
 
   .label {
     width: 100%;
     font-size: 32px;
     line-height: 38px;
-    padding: 30px;
+    padding: 15px;
+    background-color: $grey;
+
+    @include media(md) {
+      padding: 30px;
+    }
   }
 }

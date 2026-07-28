@@ -86,8 +86,6 @@
   
   add_filter('intermediate_image_sizes_advanced', 'remove_default_sizes');
   
-  add_image_size('img300', 300, 300, true);
-  
   function twentytwenty_scripts()
   {
     if (!is_admin()) {

@@ -30,8 +30,8 @@
     $pagination = paginate_links(array(
       'total' => $query->max_num_pages,
       'current' => $query->query_vars['paged'],
-      'prev_text' => 'Назад',
-      'next_text' => 'Вперед',
+      'prev_text' => '',
+      'next_text' => '',
     ));
     
     return '

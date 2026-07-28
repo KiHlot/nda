@@ -3,7 +3,7 @@
   function get_post_preview(WP_Post $post): string
   {
     $author_data = get_userdata($post->post_author);
-    $image_url = get_the_post_thumbnail_url($post->ID, 'medium');
+    $image_url = get_the_post_thumbnail_url($post->ID, 'large');
     $excerpt = get_the_excerpt($post);
     $link = get_permalink($post);
     $title = $post->post_title;
