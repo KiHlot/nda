@@ -31,9 +31,9 @@
     @include media(md) {
       padding: 30px;
     }
-    
+
     @include media(xl) {
-      width: 877px;
+      width: 73%;
     }
   }
 
@@ -46,7 +46,7 @@
 
     @include media(xl) {
       margin-top: 0;
-      width: 293px;
+      width: 25%;
     }
   }
 
