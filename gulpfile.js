@@ -1,7 +1,3 @@
-const fileswatch = "html,htm,txt,json,md,woff2,php";
-const theme = "twentytwenty";
-const proxy = "http://nda.local";
-
 import * as pkg from "gulp";
 import browserSync from "browser-sync";
 import webpack from "webpack";
@@ -14,9 +10,12 @@ import postCss from "gulp-postcss";
 import cssnano from "cssnano";
 import autoprefixer from "autoprefixer";
 import concat from "gulp-concat";
-import { deleteAsync } from "del";
 import cleanCss from "gulp-clean-css";
+import plumber from "gulp-plumber";
 
+const fileswatch = "html,htm,txt,json,md,woff2,php";
+const theme = "twentytwenty";
+const proxy = "http://nda.local";
 const { src, dest, parallel, series, watch } = pkg;
 const sass = gulpSass.default(dartSass.default);
 
@@ -29,12 +28,8 @@ function browsersync() {
 }
 
 function scripts() {
-  return src([
-    `app/wp-content/themes/${theme}/assets/js/*.js`,
-    `app/wp-content/themes/${theme}/assets/js/**/*.js`,
-    `!app/wp-content/themes/${theme}/assets/js/*.min.js`,
-    `!app/wp-content/themes/${theme}/assets/js/**/*.min.js`,
-  ])
+  return src([`app/wp-content/themes/${theme}/assets/scripts/common.js`])
+    .pipe(plumber())
     .pipe(
       webpackStream(
         {
@@ -98,29 +93,7 @@ function styles() {
     .pipe(browserSync.stream());
 }
 
-function buildcopy() {
-  return src(
-    [
-      `app/wp-content/themes/${theme}/assets/js/*.min.js`,
-      `app/wp-content/themes/${theme}/assets/css/*.min.css`,
-      `app/wp-content/themes/${theme}/**/*.{${fileswatch}}`,
-      `!app/wp-content/themes/${theme}/{src,src/**}`,
-    ],
-    { base: "app/" },
-  ).pipe(dest("dist"));
-}
-
-async function buildhtml() {
-  const includes = new ssi("app/", "dist/", "/**/*.html");
-  includes.compile();
-  await deleteAsync("dist/parts", { force: true });
-}
-
-async function cleandist() {
-  await deleteAsync("dist/**/*", { force: true });
-}
-
-function startwatch() {
+function startWatch() {
   watch(
     `app/wp-content/themes/${theme}/assets/styles/**/*`,
     { usePolling: true },
@@ -129,10 +102,8 @@ function startwatch() {
 
   watch(
     [
-      `app/wp-content/themes/${theme}/assets/js/*.js`,
-      `app/wp-content/themes/${theme}/assets/js/**/*.js`,
-      `!app/wp-content/themes/${theme}/assets/js/*.min.js`,
-      `!app/wp-content/themes/${theme}/assets/js/**/*.min.js`,
+      `app/wp-content/themes/${theme}/assets/scripts/*.js`,
+      `app/wp-content/themes/${theme}/assets/scripts/**/*.js`,
     ],
     { usePolling: true },
     scripts,
@@ -144,9 +115,12 @@ function startwatch() {
 }
 
 export { scripts, styles };
+
 export const assets = series(scripts, styles);
-export const build = series(cleandist, scripts, styles, buildcopy, buildhtml);
+
+export const build = series(scripts, styles);
+
 export default series(
   parallel(scripts, styles),
-  parallel(browsersync, startwatch),
+  parallel(browsersync, startWatch),
 );

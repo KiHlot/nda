@@ -3,7 +3,7 @@
   function get_likes_widget(WP_Post $post): string
   {
     return '
-      <div id="likes_widget" class="likes_widget">
+      <div class="likes_widget" data-postId="'.$post->ID.'">
         <button class="button decrement" data-type="decrement">
           <svg width="13" height="2" viewBox="0 0 13 2" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 1H1" stroke="white" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
