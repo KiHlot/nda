@@ -1,45 +1,88 @@
 import { fetchData } from "./helpers/_api.js";
 
-const handleClick = async (event) => {
-  const button = event.currentTarget;
-  const widget = button.closest(".likes_widget");
-
-
-  
+const disabledButtons = (widget, disabled) => {
   if (!widget) {
     return;
   }
 
+  const buttons = widget.querySelectorAll("button");
+  buttons?.forEach((btn) => (btn.disabled = disabled));
+};
+
+const handleClick = async (event) => {
+  const button = event.currentTarget;
+  const widget = button.closest(".likes_widget");
+
+  if (!widget || button.disabled) {
+    return;
+  }
+
   const countElement = widget.querySelector(".count");
-  const postId = widget.dataset.postId;
-  const type = button.dataset.type;
 
   if (!countElement) {
     return;
   }
 
-  let currentCount = parseInt(countElement.textContent) || 0;
+  const postId = widget.dataset.postId;
+  const type = button.dataset.type;
+
+  if (!postId || !type) {
+    return;
+  }
+
+  const currentCount = parseInt(countElement.textContent) || 0;
+  const oppositeType = type === "increment" ? "decrement" : "increment";
+  const buttons = widget.querySelectorAll("button");
+  let previousStates = {};
+
+  buttons.forEach((btn) => {
+    previousStates[btn.dataset.type] = btn.disabled;
+  });
+
+  previousStates = { ...previousStates, currentCount };
 
   countElement.textContent =
-    type === "increment" ? currentCount + 1 : Math.max(0, currentCount - 1);
+    type === "increment" ? currentCount + 1 : currentCount - 1;
 
-  if (postId) {
-    try {
-      const formData = new FormData();
-      formData.append("postId", postId);
-      formData.append("type", type);
-      formData.append("action", "likes_widget");
+  disabledButtons(widget, true);
 
-      console.log("formData", formData);
-      
-      const data = await fetchData(formData);
+  let success = false;
 
-      if (data?.count) {
-        countElement.textContent = data.count;
-      }
-    } catch (error) {
-      countElement.textContent = currentCount;
-      console.error("Ошибка обновления лайков:", error);
+  try {
+    const formData = new FormData();
+    formData.append("postId", postId);
+    formData.append("type", type);
+    formData.append("action", "likes_widget");
+
+    const data = await fetchData(formData);
+
+    if (data?.count !== undefined) {
+      countElement.textContent = data.count;
+      success = true;
+    }
+  } catch (error) {
+    buttons.forEach((btn) => {
+      btn.disabled = previousStates[btn.dataset.type] || false;
+    });
+    countElement.textContent = previousStates.currentCount;
+
+    console.error("Ошибка обновления лайков:", error);
+  } finally {
+    console.log("success", success);
+    console.log("previousStates", previousStates);
+    if (success) {
+      buttons.forEach((btn) => {
+        if (btn.dataset.type === type) {
+          btn.disabled = true;
+        } else if (btn.dataset.type === oppositeType) {
+          btn.disabled = false;
+        }
+      });
+    } else {
+      buttons.forEach((btn) => {
+        btn.disabled = previousStates[btn.dataset.type] || false;
+      });
+      countElement.textContent = previousStates.currentCount;
     }
   }
 };
