@@ -46,20 +46,32 @@ const handleClick = async (event) => {
 
   disabledButtons(widget, true);
 
-  let success = false;
-
   try {
     const formData = new FormData();
     formData.append("postId", postId);
     formData.append("type", type);
-    formData.append("action", "likes_widget");
+    formData.append("action", "likes_widget_api");
 
-    const data = await fetchData(formData);
+    const result = await fetchData(formData);
 
-    if (data?.count !== undefined) {
-      countElement.textContent = data.count;
-      success = true;
+    if (result?.data === undefined) {
+      buttons.forEach((btn) => {
+        btn.disabled = previousStates[btn.dataset.type] || false;
+      });
+
+      countElement.textContent = previousStates.currentCount;
+      return;
     }
+
+    countElement.textContent = result.data;
+
+    buttons.forEach((btn) => {
+      if (btn.dataset.type === type) {
+        btn.disabled = true;
+      } else if (btn.dataset.type === oppositeType) {
+        btn.disabled = false;
+      }
+    });
   } catch (error) {
     buttons.forEach((btn) => {
       btn.disabled = previousStates[btn.dataset.type] || false;
@@ -67,23 +79,6 @@ const handleClick = async (event) => {
     countElement.textContent = previousStates.currentCount;
 
     console.error("Ошибка обновления лайков:", error);
-  } finally {
-    console.log("success", success);
-    console.log("previousStates", previousStates);
-    if (success) {
-      buttons.forEach((btn) => {
-        if (btn.dataset.type === type) {
-          btn.disabled = true;
-        } else if (btn.dataset.type === oppositeType) {
-          btn.disabled = false;
-        }
-      });
-    } else {
-      buttons.forEach((btn) => {
-        btn.disabled = previousStates[btn.dataset.type] || false;
-      });
-      countElement.textContent = previousStates.currentCount;
-    }
   }
 };
 

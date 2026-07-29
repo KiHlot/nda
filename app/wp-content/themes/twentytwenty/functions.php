@@ -113,3 +113,4 @@
   include_once 'configs/index.php';
   include_once 'helpers/index.php';
   include_once 'components/index.php';
+  include_once 'api/index.php';

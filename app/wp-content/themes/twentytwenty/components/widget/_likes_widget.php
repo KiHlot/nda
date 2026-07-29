@@ -19,3 +19,15 @@
         </button>
       </div>';
   }
+  
+  function likes_widget_api($request)
+  {
+    if (empty($_POST['postId']) || empty($_POST['type'])) {
+      send_error(null);
+    }
+    
+    $postId = $_POST['postId'];
+    $type = $_POST['type'];
+    
+    send_api(21);
+  }
