@@ -2,6 +2,7 @@
   
   class Likes_Widget_Controller extends WP_REST_Controller
   {
+    private $wpdb;
     private readonly Api_Helper $api;
     private readonly string $base_route;
     private readonly string $table_name;
@@ -9,6 +10,7 @@
     public function __construct()
     {
       global $wpdb;
+      $this->wpdb = $wpdb;
       $this->base_route = '/likes-widget';
       $this->api = new Api_Helper();
       $this->table_name = $wpdb->prefix.'likes_widget';
@@ -21,10 +23,8 @@
     
     public function get_total_likes(int|string $post_id): int
     {
-      global $wpdb;
-      
-      $result = $wpdb->get_var(
-        $wpdb->prepare(
+      $result = $this->wpdb->get_var(
+        $this->wpdb->prepare(
           "SELECT SUM(type) FROM {$this->table_name} WHERE post_id = %d",
           $post_id
         )
@@ -42,14 +42,12 @@
       return $count === 1 ? 'increment' : 'decrement';
     }
     
-    public function get_user_likes_data_by_post_id(int|string $post_id, ?string $ip = null): array|null|stdClass
+    public function get_user_likes_data_by_post_id(int|string $post_id, ?string $ip = null): ?stdClass
     {
-      global $wpdb;
-      
       $user_ip = $ip ?: $this->api->get_user_ip();
       
-      $data = $wpdb->get_row(
-        $wpdb->prepare(
+      $data = $this->wpdb->get_row(
+        $this->wpdb->prepare(
           "SELECT * FROM {$this->table_name} WHERE post_id = %d AND user_ip = %s",
           $post_id,
           $user_ip
@@ -61,8 +59,7 @@
     
     public function update_like(WP_REST_Request $request)
     {
-      global $wpdb;
-      
+
       $post_id = $request->get_param('postId');
       $type = $request->get_param('type');
       $page_url = $request->get_param('pageUrl');
@@ -89,7 +86,7 @@
         $type_value = $old_type + $type_value;
       }
       
-      $result = $wpdb->replace(
+      $result = $this->wpdb->replace(
         $this->table_name,
         [
           'post_id' => $post_id,
@@ -117,12 +114,11 @@
       if (get_option('likes_widget') === 'completed') {
         return;
       }
-      
-      global $wpdb;
+
       require_once(ABSPATH.'wp-admin/includes/upgrade.php');
       
       $table_name = $this->table_name;
-      $charset_collate = $wpdb->get_charset_collate();
+      $charset_collate = $this->wpdb->get_charset_collate();
       
       $sql = "CREATE TABLE $table_name (
         post_id bigint(20) UNSIGNED NOT NULL,
