@@ -32,6 +32,11 @@
       <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="55b9fcea-6124-4017-bdeb-77f28184b989" timeout="30000" />
     </phpcs_settings>
   </component>
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/app" />
+    </include_path>
+  </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.4" />
   <component name="PhpStan">
     <PhpStan_settings>

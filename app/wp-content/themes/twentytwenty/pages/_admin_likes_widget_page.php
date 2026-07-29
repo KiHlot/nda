@@ -6,7 +6,7 @@
 
 	add_action('admin_menu', function () {
 		$hook = add_menu_page(
-			'Заголовок',
+			'Список лайков',
 			'Список лайков',
 			'manage_options',
 			'page-slug',

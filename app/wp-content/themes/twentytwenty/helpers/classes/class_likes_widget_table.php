@@ -1,188 +1,121 @@
 <?php
-	
-	require_once ABSPATH.'wp-admin/includes/class-wp-list-table.php';
-	
-	class Likes_Widget_Table extends WP_List_Table
-	{
-		
-		function __construct()
-		{
-			parent::__construct(array(
-				'singular' => 'log',
-				'plural' => 'logs',
-				'ajax' => false,
-			));
-			
-			$this->bulk_action_handler();
-
-			add_screen_option('per_page', array(
-				'label' => 'Показывать на странице',
-				'default' => 20,
-				'option' => 'logs_per_page',
-			));
-			
-			$this->prepare_items();
-			
-			add_action('wp_print_scripts', [__CLASS__, '_list_table_css']);
-		}
-
-		function prepare_items()
-		{
-			global $wpdb;
-			
-			// пагинация
-			$per_page = get_user_meta(
-				get_current_user_id(),
-				get_current_screen()->get_option('per_page', 'option'),
-				true
-			) ?: 20;
-			
-			$this->set_pagination_args(array(
-				'total_items' => 3,
-				'per_page' => $per_page,
-			));
-			
-			$cur_page = (int)$this->get_pagenum(); // желательно после set_pagination_args()
-			
-			// элементы таблицы
-			// обычно элементы получаются из БД запросом
-			// $this->items = get_posts();
-			
-			// чтобы понимать как должны выглядеть добавляемые элементы
-			$this->items = array(
-				(object)array(
-					'id' => 2,
-					'key' => 'aaaaaaaaaa777777',
-					'name' => 'Коля',
-				),
-				(object)array(
-					'id' => 3,
-					'key' => 'ddddddd555555555',
-					'name' => 'Витя',
-				),
-				(object)array(
-					'id' => 4,
-					'key' => 'hhhhhhhhhhh999999',
-					'name' => 'Петя',
-				),
-			);
-		}
-		
-		// колонки таблицы
-		function get_columns()
-		{
-			return array(
-				'cb' => '<input type="checkbox" />',
-				'id' => 'ID',
-				'customer_name' => 'Имя',
-				'license_key' => 'License Key',
-			);
-		}
-		
-		// сортируемые колонки
-		function get_sortable_columns()
-		{
-			return array(
-				'customer_name' => array('name', 'desc'),
-			);
-		}
-		
-		protected function get_bulk_actions()
-		{
-			return array(
-				'delete' => 'Delete',
-			);
-		}
-		
-		// Элементы управления таблицей. Расположены между групповыми действиями и панагией.
-		function extra_tablenav($which)
-		{
-			echo '<div class="alignleft actions">HTML код полей формы (select). Внутри тега form...</div>';
-		}
-		
-		// вывод каждой ячейки таблицы -------------
-		
-		static function _list_table_css()
-		{
-			?>
-			<style>
-				table.logs .column-id {
-					width: 2em;
-				}
-				
-				table.logs .column-license_key {
-					width: 8em;
-				}
-				
-				table.logs .column-customer_name {
-					width: 15%;
-				}
-			</style>
-			<?php
-		}
-		
-		// вывод каждой ячейки таблицы...
-		function column_default($item, $colname)
-		{
-			if ($colname === 'customer_name') {
-				// ссылки действия над элементом
-				$actions = array();
-				$actions['edit'] = sprintf('<a href="%s">%s</a>', '#', __('edit', 'hb-users'));
-				
-				return esc_html($item->name).$this->row_actions($actions);
-			} else {
-				return isset($item->$colname) ? $item->$colname : print_r($item, 1);
-			}
-		}
-		
-		// заполнение колонки cb
-		function column_cb($item)
-		{
-			echo '<input type="checkbox" name="licids[]" id="cb-select-'.$item->id.'" value="'.$item->id.'" />';
-		}
-		
-		// остальные методы, в частности вывод каждой ячейки таблицы...
-		
-		// helpers -------------
-		
-		private function bulk_action_handler()
-		{
-			if (empty($_POST['licids']) || empty($_POST['_wpnonce'])) {
-				return;
-			}
-			
-			if (!$action = $this->current_action()) {
-				return;
-			}
-			
-			if (!wp_verify_nonce($_POST['_wpnonce'], 'bulk-'.$this->_args['plural'])) {
-				wp_die('nonce error');
-			}
-			
-			// делает что-то...
-			die($action); // delete
-			die(print_r($_POST['licids']));
-		}
-		
-		/*
-		// Пример создания действий - ссылок в основной ячейки таблицы при наведении на ряд.
-		// Однако гораздо удобнее указать их напрямую при выводе ячейки - см ячейку customer_name...
-	
-		// основная колонка в которой будут показываться действия с элементом
-		protected function get_default_primary_column_name() {
-			return 'disp_name';
-		}
-	
-		// действия над элементом для основной колонки (ссылки)
-		protected function handle_row_actions( $post, $column_name, $primary ) {
-			if ( $primary !== $column_name ) return ''; // только для одной ячейки
-	
-			$actions = array();
-	
-			$actions['edit'] = sprintf( '<a href="%s">%s</a>', '#', __('edit','hb-users') );
-	
-			return $this->row_actions( $actions );
-		}
-		*/
-		
-	}
+  
+  require_once ABSPATH.'wp-admin/includes/class-wp-list-table.php';
+  
+  class Likes_Widget_Table extends WP_List_Table
+  {
+    
+    private $wpdb;
+    private $table_name;
+    
+    public function __construct()
+    {
+      parent::__construct([
+        'singular' => 'like_stat',
+        'plural' => 'like_stats',
+        'ajax' => false,
+      ]);
+      
+      global $wpdb;
+      $this->wpdb = $wpdb;
+      $this->table_name = $wpdb->prefix.'likes_widget';
+      $this->bulk_action_handler();
+      
+      add_screen_option('per_page', [
+        'label' => 'Показывать на странице',
+        'default' => 20,
+        'option' => 'logs_per_page',
+      ]);
+      
+      $this->prepare_items();
+    }
+    
+    public function get_columns()
+    {
+      return [
+        'post_id' => 'ID поста',
+        'post_title' => 'Название',
+        'likes' => 'Лайков (+)',
+        'dislikes' => 'Дизлайков (-)',
+        'balance' => 'Баланс',
+        'total_votes' => 'Всего голосов',
+      ];
+    }
+    
+    public function get_sortable_columns()
+    {
+      return [
+        'post_id' => array('post_id', true)
+      ];
+    }
+    
+    protected function column_default($item, $column_name)
+    {
+      return isset($item[$column_name]) ? esc_html($item[$column_name]) : '';
+    }
+    
+    protected function column_post_title($item)
+    {
+      $title = empty($item['post_title']) ? '(без названия)' : $item['post_title'];
+      $edit_link = get_edit_post_link($item['post_id']);
+      
+      return sprintf('<a href="%s" target="_blank">%s</a>', $edit_link, esc_html($title));
+    }
+    
+    public function prepare_items()
+    {
+      $per_page = $this->get_items_per_page('likes_stats_per_page');
+      $current_page = $this->get_pagenum();
+      
+      $orderby = isset($_GET['orderby']) && $_GET['orderby'] === 'post_id' ? 'post_id' : 'post_id';
+      $order = isset($_GET['order']) && strtoupper($_GET['order']) === 'ASC' ? 'ASC' : 'DESC';
+      
+      $sql = "SELECT
+                    post_id,
+                    SUM(type) AS balance,
+                    SUM(IF(type = 1, 1, 0)) AS likes,
+                    SUM(IF(type = -1, 1, 0)) AS dislikes,
+                    COUNT(*) AS total_votes
+                FROM {$this->table_name}
+                WHERE 1=1";
+      $sql .= " GROUP BY post_id";
+      $sql .= " ORDER BY $orderby $order";
+      
+      $count_sql = "SELECT COUNT(DISTINCT post_id) FROM ({$sql}) AS subquery";
+      $total_items = (int)$this->wpdb->get_var($count_sql);
+      
+      $sql .= " LIMIT %d OFFSET %d";
+      $sql = $this->wpdb->prepare($sql, $per_page, ($current_page - 1) * $per_page);
+      
+      $data = $this->wpdb->get_results($sql, ARRAY_A);
+      
+      if (!empty($data)) {
+        $post_ids = array_column($data, 'post_id');
+        $posts = get_posts([
+          'post_type' => 'post',
+          'post__in' => $post_ids,
+          'numberposts' => -1,
+          'suppress_filters' => false,
+        ]);
+        $titles = [];
+        
+        foreach ($posts as $post) {
+          $titles[$post->ID] = $post->post_title;
+        }
+        
+        foreach ($data as &$row) {
+          $row['post_title'] = isset($titles[$row['post_id']]) ? $titles[$row['post_id']] : '';
+        }
+        
+        unset($row);
+      }
+      
+      $this->items = $data;
+      
+      $this->set_pagination_args([
+        'total_items' => $total_items,
+        'per_page' => $per_page,
+        'total_pages' => ceil($total_items / $per_page),
+      ]);
+    }
+  }

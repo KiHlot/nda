@@ -101,11 +101,6 @@
     );
     
     wp_enqueue_style('app_style', get_template_directory_uri().'/assets/css/app.min.css?v='._S_VERSION, [], null);
-    
-    wp_localize_script('app_scripts', 'ajax_var', array(
-      'url' => admin_url('admin-ajax.php'),
-      'nonce' => wp_create_nonce('ajaxnonce')
-    ));
   }
   
   add_action('wp_enqueue_scripts', 'twentytwenty_scripts');
