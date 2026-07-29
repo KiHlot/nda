@@ -5,7 +5,7 @@
     private $wpdb;
     private readonly Api_Helper $api;
     private readonly string $base_route;
-    private readonly string $table_name;
+    public readonly string $table_name;
     
     public function __construct()
     {
@@ -57,7 +57,7 @@
       return $data ?: null;
     }
     
-    public function update_like(WP_REST_Request $request)
+    public function update_like(WP_REST_Request $request): array
     {
 
       $post_id = $request->get_param('postId');

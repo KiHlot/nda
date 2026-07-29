@@ -114,6 +114,7 @@
   include_once 'helpers/index.php';
   include_once 'components/index.php';
   include_once 'controllers/index.php';
-  include_once('api/routes.php');
+  include_once 'pages/index.php';
+  include_once 'api/routes.php';
   
   (new Likes_Widget_Controller)->create_likes_widget_db();
