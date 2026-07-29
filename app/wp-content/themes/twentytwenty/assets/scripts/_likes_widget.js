@@ -31,7 +31,6 @@ const handleClick = async (event) => {
   }
 
   const currentCount = parseInt(countElement.textContent) || 0;
-  const oppositeType = type === "increment" ? "decrement" : "increment";
   const buttons = widget.querySelectorAll("button");
   let previousStates = {};
 
@@ -50,34 +49,33 @@ const handleClick = async (event) => {
     const formData = new FormData();
     formData.append("postId", postId);
     formData.append("type", type);
-    formData.append("action", "likes_widget_api");
+    formData.append("pageUrl", window.location.href);
 
     const result = await fetchData(formData);
 
-    if (result?.data === undefined) {
+    const { data, errors } = result || {};
+
+    if (data === undefined) {
       buttons.forEach((btn) => {
         btn.disabled = previousStates[btn.dataset.type] || false;
       });
 
       countElement.textContent = previousStates.currentCount;
+      console.error(errors?.code || 'Ошибка сервера');
       return;
     }
 
-    countElement.textContent = result.data;
+    countElement.textContent = data.count;
 
     buttons.forEach((btn) => {
-      if (btn.dataset.type === type) {
-        btn.disabled = true;
-      } else if (btn.dataset.type === oppositeType) {
-        btn.disabled = false;
-      }
+      btn.disabled = btn.dataset.type === data.disabledType;
     });
   } catch (error) {
     buttons.forEach((btn) => {
       btn.disabled = previousStates[btn.dataset.type] || false;
     });
-    countElement.textContent = previousStates.currentCount;
 
+    countElement.textContent = previousStates.currentCount;
     console.error("Ошибка обновления лайков:", error);
   }
 };

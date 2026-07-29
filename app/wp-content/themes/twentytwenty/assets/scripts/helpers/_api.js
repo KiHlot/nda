@@ -1,8 +1,6 @@
-const wpAjaxUrl = ajax_var.url;
-
 export const fetchData = async (formData) => {
   try {
-    const response = await fetch(wpAjaxUrl, {
+    const response = await fetch("/wp-json/rest/likes-widget", {
       method: "post",
       body: formData,
     });
